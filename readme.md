@@ -35,7 +35,7 @@ We're working on building out the bulk of the admin commands, but you can still 
 
 #### Future Work
 
-These are other things we think would be super-useful, but aren't aailable right now:
+These are other things we think would be super-useful, but aren't available right now:
 
 * Support multiple floorplans
 * Slack bot commands for managing floorplans and locations
