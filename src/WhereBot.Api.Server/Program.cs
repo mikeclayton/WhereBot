@@ -22,6 +22,7 @@ namespace WhereBot.Api
 
             var bootstrapper = new DefaultNancyBootstrapper();
 
+            Globals.Repository.LoadMaps();
             Globals.Repository.LoadLocations();
             Globals.Repository.LoadResources();
 

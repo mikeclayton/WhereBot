@@ -31,8 +31,10 @@ namespace WhereBot.Api.Server
         {
             lock (this.LockObject)
             {
+                this.maps = new List<Map>();
                 this.locations = new List<Location>();
                 this.resources = new List<Resource>();
+                this.nextMapId = 0;
                 this.nextLocationId = 0;
                 this.nextResourceId = 0;
             }
@@ -93,6 +95,24 @@ namespace WhereBot.Api.Server
         {
         }
 
+        public void LoadMaps()
+        {
+            lock (this.LockObject)
+            {
+                var folder = "..\\..\\App_Data";
+                var filename = Path.Combine(folder, "maps.json");
+                using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var storage = (List<Storage.Map.Builder>)JsonSerializer.Create().Deserialize(reader, typeof(List<Storage.Map.Builder>));
+                        this.maps = storage.Select(m => m.Build().ToModel()).ToList();
+                    }
+                }
+                this.nextMapId = this.maps.Max(m => m.Id) + 1;
+            }
+        }
+
         #endregion
 
         #region Locations
@@ -105,13 +125,13 @@ namespace WhereBot.Api.Server
             return this.locations.AsReadOnly();
         }
 
-        public Location AddLocation(int floor, string name, int x, int y)
+        public Location AddLocation(Map map, string name, int x, int y)
         {
             lock (this.LockObject)
             {
                 try
                 {
-                    var location = this.AddLocation(this.nextLocationId, floor, name, x, y);
+                    var location = this.AddLocation(this.nextLocationId, map, name, x, y);
                     this.nextLocationId += 1;
                     return location;
                 }
@@ -122,18 +142,18 @@ namespace WhereBot.Api.Server
             }
         }
 
-        public Location AddLocation(int id, int floor, string name, int x, int y)
+        public Location AddLocation(int id, Map map, string name, int x, int y)
         {
             lock (this.LockObject)
             {
                 try
                 {
-                    var current = this.locations.SingleOrDefault(l => (l.Id == id) || ((l.Floor == floor) && (l.Name == name)));
+                    var current = this.locations.SingleOrDefault(l => (l.Id == id));
                     if (current != null)
                     {
                         throw new InvalidOperationException("Location already exists.");
                     }
-                    var location = new Location.Builder { Id = id, Floor = floor, Name = name, X = x, Y = y }.Build();
+                    var location = new Location.Builder { Id = id, Map = map, Name = name, X = x, Y = y }.Build();
                     this.locations.Add(location);
                     return location;
                 }
@@ -175,11 +195,11 @@ namespace WhereBot.Api.Server
                 {
                     using (var reader = new StreamReader(stream))
                     {
-                        var storage = (List<Storage.Location>)JsonSerializer.Create().Deserialize(reader, typeof(List<Storage.Location>));
-                        this.locations = storage.Select(l => l.ToModel()).ToList();
+                        var storage = (List<Storage.Location.Builder>)JsonSerializer.Create().Deserialize(reader, typeof(List<Storage.Location.Builder>));
+                        this.locations = storage.Select(l => l.Build().ToModel(this)).ToList();
                     }
                 }
-                this.nextLocationId = this.locations.Max(r => r.Id) + 1;
+                this.nextLocationId = this.locations.Max(l => l.Id) + 1;
             }
         }
 
@@ -290,8 +310,8 @@ namespace WhereBot.Api.Server
                 {
                     using (var reader = new StreamReader(stream))
                     {
-                        var storage = (List<Storage.Resource>)JsonSerializer.Create(settings).Deserialize(reader, typeof(List<Storage.Resource>));
-                        this.resources = storage.Select(r => r.ToModel(this)).ToList();
+                        var storage = (List<Storage.Resource.Builder>)JsonSerializer.Create(settings).Deserialize(reader, typeof(List<Storage.Resource.Builder>));
+                        this.resources = storage.Select(r => r.Build().ToModel(this)).ToList();
                     }
                 }
                 this.nextResourceId = this.resources.Max(r => r.Id) + 1;

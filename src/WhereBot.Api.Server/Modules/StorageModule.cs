@@ -1,5 +1,4 @@
 ﻿using Nancy;
-using WhereBot.Api.Server.Services;
 
 namespace WhereBot.Api.Server.Modules
 {
@@ -12,7 +11,7 @@ namespace WhereBot.Api.Server.Modules
 
             Post["/clear"] = parameters =>
             {
-                new StorageService(this.Repository).Clear();
+                this.Repository.ClearStorage();
                 return null;
             };
 

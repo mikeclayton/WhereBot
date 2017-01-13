@@ -32,7 +32,7 @@ namespace WhereBot.Api.Client
 
         #region Map Methods
 
-        private static Map FromJson(JToken token)
+        public static Map FromJson(JToken token)
         {
             return new Map.Builder
             {

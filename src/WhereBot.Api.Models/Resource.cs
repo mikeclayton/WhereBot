@@ -82,6 +82,16 @@
 
         #endregion
 
+        #region Object Interface
+
+        public override string ToString()
+        {
+            var location = (this.Location == null) ? "null" : string.Format("\"{0}\"", this.Location.Name);
+            return string.Format("Id={0},Name=\"{1}\",Location={2}", this.Id, this.Name, location);
+        }
+
+        #endregion
+
     }
 
 }

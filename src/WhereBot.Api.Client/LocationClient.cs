@@ -34,11 +34,17 @@ namespace WhereBot.Api.Client
 
         internal static Location FromJson(JToken token)
         {
+            var mapToken = token.Value<JToken>("map");
+            var map = default(Map);
+            if ((mapToken != null) && (mapToken.Type != JTokenType.Null))
+            {
+                map = MapClient.FromJson(mapToken);
+            }
             return new Location.Builder
             {
                 Id = token.Value<int>("id"),
                 Name = token.Value<string>("name"),
-                Floor = token.Value<int>("floor"),
+                Map = map,
                 X = token.Value<int>("x"),
                 Y = token.Value<int>("y")
             }.Build();

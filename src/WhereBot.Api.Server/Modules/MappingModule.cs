@@ -11,10 +11,63 @@ namespace WhereBot.Api.Server.Modules
     public class MappingModule : NancyModule
     {
 
-        public MappingModule() : base("/map")
+        #region Constructors
+
+        public MappingModule() : base("/maps")
+        {
+            this.InitRoutes();
+        }
+
+        #endregion
+
+        #region Properties
+
+        private DataSet Repository
+        {
+            get
+            {
+                return Globals.Repository;
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void InitRoutes()
         {
 
-            Get["/fromIds"] = parameters =>
+            #region Query Routes
+
+            Get["/all"] = parameters =>
+            {
+                var maps = this.Repository.GetMaps();
+                return Response.AsJson(maps);
+            };
+
+            Get["/search"] = parameters =>
+            {
+                var querystring = (DynamicDictionary)Request.Query;
+                var filter = this.Repository.GetMaps().AsEnumerable();
+                if (querystring.ContainsKey("id"))
+                {
+                    var id = int.Parse((string)querystring["id"]);
+                    filter = filter.Where(l => l.Id == id);
+                }
+                if (querystring.ContainsKey("name"))
+                {
+                    var name = (string)querystring["name"];
+                    filter = filter.Where(l => l.Name == name);
+                }
+                var maps = filter.ToList();
+                return Response.AsJson(maps);
+            };
+
+            #endregion
+
+            #region Rendering Routes
+
+            Get["/render/fromIds"] = parameters =>
             {
                 // get the locations to render
                 var locationString = (string)Request.Query["locationIds"];
@@ -49,7 +102,7 @@ namespace WhereBot.Api.Server.Modules
                 }
             };
 
-            //Get["/locations/all"] = parameters =>
+            //Get["/render/locations/all"] = parameters =>
             //{
             //    var locations = this.Repository.GetLocations().ToList();
             //    // render the map
@@ -73,7 +126,7 @@ namespace WhereBot.Api.Server.Modules
             //    }
             //};
 
-            //Get["/resources/nearResourceId/{resourceId}"] = parameters =>
+            //Get["/render/resources/nearResourceId/{resourceId}"] = parameters =>
             //{
             //    var resourceRepository = new ResourceService(this.Repository);
             //    var resourceId = int.Parse((string)parameters.resourceId);
@@ -104,16 +157,8 @@ namespace WhereBot.Api.Server.Modules
             //    }
             //};
 
-        }
+            #endregion
 
-        #region Properties
-
-        private DataSet Repository
-        {
-            get
-            {
-                return Globals.Repository;
-            }
         }
 
         #endregion

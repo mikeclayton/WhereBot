@@ -61,10 +61,6 @@
     <Compile Include="Modules\LocationModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\MapService.cs" />
-    <Compile Include="Services\StorageService.cs" />
-    <Compile Include="Services\LocationService.cs" />
-    <Compile Include="Services\ResourceService.cs" />
     <Compile Include="Storage\Location.cs" />
     <Compile Include="Storage\Map.cs" />
     <Compile Include="Storage\Resource.cs" />
@@ -76,9 +72,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Images\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WhereBot.Api.Models\WhereBot.Api.Models.csproj">

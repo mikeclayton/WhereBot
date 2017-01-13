@@ -1,4 +1,4 @@
-﻿using WhereBot.Api.Server.Services;
+﻿using System.Linq;
 
 namespace WhereBot.Api.Server.Storage
 {
@@ -56,19 +56,19 @@ namespace WhereBot.Api.Server.Storage
         public int Id
         {
             get;
-            set;
+            private set;
         }
 
         public string Name
         {
             get;
-            set;
+            private set;
         }
 
         public int? LocationId
         {
             get;
-            set;
+            private set;
         }
 
         #endregion
@@ -87,8 +87,8 @@ namespace WhereBot.Api.Server.Storage
 
         public static Models.Resource ToModel(Resource resource, DataSet repository)
         {
-            var locationService = new LocationService(repository);
-            var location = resource.LocationId.HasValue ? locationService.GetLocationById(resource.LocationId.Value) : null;
+            var locations = repository.GetLocations();
+            var location = resource.LocationId.HasValue ? locations.Single(l => l.Id == resource.LocationId.Value) : null;
             return new Models.Resource.Builder
             {
                 Id = resource.Id,

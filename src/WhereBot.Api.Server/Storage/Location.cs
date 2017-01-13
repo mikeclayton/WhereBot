@@ -1,4 +1,6 @@
-﻿namespace WhereBot.Api.Server.Storage
+﻿using System.Linq;
+
+namespace WhereBot.Api.Server.Storage
 {
 
     public sealed class Location
@@ -15,13 +17,13 @@
                 set;
             }
 
-            public int Floor
+            public string Name
             {
                 get;
                 set;
             }
 
-            public string Name
+            public int? MapId
             {
                 get;
                 set;
@@ -44,8 +46,8 @@
                 return new Location
                 {
                     Id = this.Id,
-                    Floor = this.Floor,
                     Name = this.Name,
+                    MapId = this.MapId,
                     X = this.X,
                     Y = this.Y,
                 };
@@ -68,31 +70,31 @@
         public int Id
         {
             get;
-            set;
-        }
-
-        public int Floor
-        {
-            get;
-            set;
+            private set;
         }
 
         public string Name
         {
             get;
-            set;
+            private set;
+        }
+
+        public int? MapId
+        {
+            get;
+            private set;
         }
 
         public int X
         {
             get;
-            set;
+            private set;
         }
 
         public int Y
         {
             get;
-            set;
+            private set;
         }
 
         #endregion
@@ -104,28 +106,30 @@
             return new Location.Builder
             {
                 Id = location.Id,
-                Floor = location.Floor,
                 Name = location.Name,
+                MapId = (location.Map == null) ? new int?() : location.Map.Id,
                 X = location.X,
                 Y = location.Y
             }.Build();
         }
 
-        public static Models.Location ToModel(Location location)
+        public static Models.Location ToModel(Location location, DataSet repository)
         {
+            var maps = repository.GetMaps();
+            var map = location.MapId.HasValue ? maps.Single(m => m.Id == location.MapId.Value) : null;
             return new Models.Location.Builder
             {
                 Id = location.Id,
-                Floor = location.Floor,
                 Name = location.Name,
+                Map = map,
                 X = location.X,
                 Y = location.Y
             }.Build();
         }
 
-        public Models.Location ToModel()
+        public Models.Location ToModel(DataSet repository)
         {
-            return Location.ToModel(this);
+            return Location.ToModel(this, repository);
         }
 
         #endregion

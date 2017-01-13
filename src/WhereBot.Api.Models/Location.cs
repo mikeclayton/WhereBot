@@ -17,13 +17,13 @@ namespace WhereBot.Api.Models
                 set;
             }
 
-            public int Floor
+            public string Name
             {
                 get;
                 set;
             }
 
-            public string Name
+            public Map Map
             {
                 get;
                 set;
@@ -46,13 +46,18 @@ namespace WhereBot.Api.Models
                 return new Location
                 {
                     Id = this.Id,
-                    Floor = this.Floor,
                     Name = this.Name,
+                    Map = this.Map,
                     X = this.X,
                     Y = this.Y,
                 };
             }
 
+        }
+
+        public object ToList()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -73,13 +78,13 @@ namespace WhereBot.Api.Models
             private set;
         }
 
-        public int Floor
+        public string Name
         {
             get;
             private set;
         }
 
-        public string Name
+        public Map Map
         {
             get;
             private set;
@@ -103,7 +108,22 @@ namespace WhereBot.Api.Models
 
         public double GetDistanceFrom(Location location)
         {
+            // we can't measure the distance if they're on different maps
+            if(this.Map != location.Map)
+            {
+                throw new InvalidOperationException();
+            }
             return Math.Sqrt(Math.Pow(this.X - location.X, 2) + Math.Pow(this.Y - location.Y, 2));
+        }
+
+        #endregion
+
+        #region Object Interface
+
+        public override string ToString()
+        {
+            var map = (this.Map == null) ? "null" : string.Format("\"{0}\"", this.Map.Name);
+            return string.Format("Id={0},Name=\"{1}\",Map={2}", this.Id, this.Name, map);
         }
 
         #endregion

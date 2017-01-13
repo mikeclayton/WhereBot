@@ -82,6 +82,34 @@
             private set;
         }
 
+        #endregion
+
+        #region Methods
+
+        public static Map FromModel(Models.Map map)
+        {
+            return new Map.Builder
+            {
+                Id = map.Id,
+                Name = map.Name,
+                Filename = map.Filename
+            }.Build();
+        }
+
+        public static Models.Map ToModel(Map map)
+        {
+            return new Models.Map.Builder
+            {
+                Id = map.Id,
+                Name = map.Name,
+                Filename = map.Filename
+            }.Build();
+        }
+
+        public Models.Map ToModel()
+        {
+            return Map.ToModel(this);
+        }
 
         #endregion
 
