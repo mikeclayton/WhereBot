@@ -1,7 +1,7 @@
-﻿namespace WhereBot.Api.Server.Storage
+﻿namespace WhereBot.Api.Data.Storage
 {
 
-    public sealed class Map
+    internal sealed class Map
     {
 
         #region Builder
@@ -86,7 +86,7 @@
 
         #region Methods
 
-        public static Map FromModel(Models.Map map)
+        public static Map FromModel(Domain.Map map)
         {
             return new Map.Builder
             {
@@ -96,9 +96,9 @@
             }.Build();
         }
 
-        public static Models.Map ToModel(Map map)
+        public static Domain.Map ToModel(Map map)
         {
-            return new Models.Map.Builder
+            return new Domain.Map.Builder
             {
                 Id = map.Id,
                 Name = map.Name,
@@ -106,7 +106,7 @@
             }.Build();
         }
 
-        public Models.Map ToModel()
+        public Domain.Map ToModel()
         {
             return Map.ToModel(this);
         }

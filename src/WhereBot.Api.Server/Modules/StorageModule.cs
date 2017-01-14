@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using WhereBot.Api.Data;
 
 namespace WhereBot.Api.Server.Modules
 {
@@ -8,27 +9,36 @@ namespace WhereBot.Api.Server.Modules
 
         public StorageModule() : base("/storage")
         {
-
-            Post["/clear"] = parameters =>
-            {
-                this.Repository.ClearStorage();
-                return null;
-            };
-
+            this.InitRoutes();
         }
 
         #region Properties
 
-        private DataSet Repository
+        private DbContext DbContext
         {
             get
             {
-                return Globals.Repository;
+                return Globals.DbContext;
             }
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void InitRoutes()
+        {
+
+            Post["/clear"] = parameters =>
+            {
+                this.DbContext.ClearStorage();
+                return null;
+            };
+
         }
 
         #endregion
 
     }
 
-}
+    }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WhereBot.Api.Models
+namespace WhereBot.Api.Data.Domain
 {
 
     public sealed class Location

@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using System.Linq;
+using WhereBot.Api.Data;
 
 namespace WhereBot.Api.Server.Modules
 {
@@ -18,11 +19,11 @@ namespace WhereBot.Api.Server.Modules
 
         #region Properties
 
-        private DataSet Repository
+        private DbContext DbContext
         {
             get
             {
-                return Globals.Repository;
+                return Globals.DbContext;
             }
         }
 
@@ -38,7 +39,7 @@ namespace WhereBot.Api.Server.Modules
             Get["/search"] = parameters =>
             {
                 var querystring = (DynamicDictionary)Request.Query;
-                var filter = this.Repository.GetLocations().AsEnumerable();
+                var filter = this.DbContext.GetLocations().AsEnumerable();
                 if (querystring.ContainsKey("id"))
                 {
                     var id = int.Parse((string)querystring["id"]);
@@ -65,11 +66,11 @@ namespace WhereBot.Api.Server.Modules
             Post["/add"] = parameters =>
             {
                 var mapId = int.Parse((string)this.Request.Query["mapId"]);
-                var map = this.Repository.GetMaps().Single(m => m.Id == mapId); ;
+                var map = this.DbContext.GetMaps().Single(m => m.Id == mapId); ;
                 var name = (string)this.Request.Query["name"];
                 var x = int.Parse((string)this.Request.Query["x"]);
                 var y = int.Parse((string)this.Request.Query["y"]);
-                var location = this.Repository.AddLocation(map, name, x, y);
+                var location = this.DbContext.AddLocation(map, name, x, y);
                 return Response.AsJson(location);
             };
 

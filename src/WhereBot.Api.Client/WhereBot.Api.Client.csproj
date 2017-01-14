@@ -49,13 +49,13 @@
     <Compile Include="WhereBotClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\WhereBot.Api.Models\WhereBot.Api.Models.csproj">
-      <Project>{6a23f58a-c1ed-4c4c-82b1-b85fe8828b5d}</Project>
-      <Name>WhereBot.Api.Models</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\WhereBot.Api.Data\WhereBot.Api.Data.csproj">
+      <Project>{f68bf156-b54a-48ef-85dd-23025adc05fb}</Project>
+      <Name>WhereBot.Api.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

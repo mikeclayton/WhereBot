@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Nancy;
+using WhereBot.Api.Data;
 
 namespace WhereBot.Api.Server.Modules
 {
@@ -22,11 +23,11 @@ namespace WhereBot.Api.Server.Modules
 
         #region Properties
 
-        private DataSet Repository
+        private DbContext DbContext
         {
             get
             {
-                return Globals.Repository;
+                return Globals.DbContext;
             }
         }
 
@@ -41,14 +42,14 @@ namespace WhereBot.Api.Server.Modules
 
             Get["/all"] = parameters =>
             {
-                var maps = this.Repository.GetMaps();
+                var maps = this.DbContext.GetMaps();
                 return Response.AsJson(maps);
             };
 
             Get["/search"] = parameters =>
             {
                 var querystring = (DynamicDictionary)Request.Query;
-                var filter = this.Repository.GetMaps().AsEnumerable();
+                var filter = this.DbContext.GetMaps().AsEnumerable();
                 if (querystring.ContainsKey("id"))
                 {
                     var id = int.Parse((string)querystring["id"]);
@@ -72,11 +73,11 @@ namespace WhereBot.Api.Server.Modules
                 // get the locations to render
                 var locationString = (string)Request.Query["locationIds"];
                 var locationIds = (string.IsNullOrEmpty(locationString)) ? new List<int>() : locationString.Split(',').Select(l => int.Parse(l)).ToList();
-                var locations = this.Repository.GetLocations().Where(l => locationIds.Contains(l.Id)).ToList();
+                var locations = this.DbContext.GetLocations().Where(l => locationIds.Contains(l.Id)).ToList();
                 // get the resources to render
                 var resourceString = (string)Request.Query["resourceIds"];
                 var resourceIds = (string.IsNullOrEmpty(resourceString)) ? new List<int>() : resourceString.Split(',').Select(l => int.Parse(l)).ToList();
-                var resources = this.Repository.GetResources().Where(r => resourceIds.Contains(r.Id)).ToList();
+                var resources = this.DbContext.GetResources().Where(r => resourceIds.Contains(r.Id)).ToList();
                 // render the map
                 var mapId = 0; // hardcoded for now
                 var filename = string.Format("..\\..\\App_Data\\Maps\\map-{0:D4}.png", mapId);

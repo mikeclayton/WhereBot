@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using WhereBot.Api.Models;
+using WhereBot.Api.Data.Domain;
 
 namespace WhereBot.Api
 {

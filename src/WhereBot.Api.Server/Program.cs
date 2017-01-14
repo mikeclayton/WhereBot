@@ -22,9 +22,9 @@ namespace WhereBot.Api
 
             var bootstrapper = new DefaultNancyBootstrapper();
 
-            Globals.Repository.LoadMaps();
-            Globals.Repository.LoadLocations();
-            Globals.Repository.LoadResources();
+            Globals.DbContext.LoadMaps();
+            Globals.DbContext.LoadLocations();
+            Globals.DbContext.LoadResources();
 
             var uri = "http://localhost:1234";
             using (var host = new NancyHost(new Uri(uri), bootstrapper, settings))

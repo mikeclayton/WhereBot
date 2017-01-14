@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WhereBot.Api.Models;
+using WhereBot.Api.Data.Domain;
 
-namespace WhereBot.Api.Server
+namespace WhereBot.Api.Data
 {
 
-    public sealed class DataSet
+    public sealed class DbContext
     {
 
         #region Locking

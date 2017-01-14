@@ -1,16 +1,18 @@
-﻿namespace WhereBot.Api.Server
+﻿using WhereBot.Api.Data;
+
+namespace WhereBot.Api.Server
 {
 
     public static class Globals
     {
 
-        private static readonly DataSet repository = new DataSet();
+        private static readonly DbContext dbContext= new DbContext();
 
-        public static DataSet Repository
+        public static DbContext DbContext
         {
             get
             {
-                return Globals.repository;
+                return Globals.dbContext;
             }
         }
 

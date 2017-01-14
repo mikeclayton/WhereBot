@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 
-namespace WhereBot.Api.Server.Storage
+namespace WhereBot.Api.Data.Storage
 {
 
-    public sealed class Resource
+    internal sealed class Resource
     {
 
         #region Builder
@@ -75,7 +75,7 @@ namespace WhereBot.Api.Server.Storage
 
         #region Methods
 
-        public static Resource FromModel(Models.Resource resource)
+        public static Resource FromModel(Domain.Resource resource)
         {
             return new Resource.Builder
             {
@@ -85,11 +85,11 @@ namespace WhereBot.Api.Server.Storage
             }.Build();
         }
 
-        public static Models.Resource ToModel(Resource resource, DataSet repository)
+        public static Domain.Resource ToModel(Resource resource, DbContext dbContext)
         {
-            var locations = repository.GetLocations();
+            var locations = dbContext.GetLocations();
             var location = resource.LocationId.HasValue ? locations.Single(l => l.Id == resource.LocationId.Value) : null;
-            return new Models.Resource.Builder
+            return new Domain.Resource.Builder
             {
                 Id = resource.Id,
                 Name = resource.Name,
@@ -97,9 +97,9 @@ namespace WhereBot.Api.Server.Storage
             }.Build();
         }
 
-        public Models.Resource ToModel(DataSet repository)
+        public Domain.Resource ToModel(DbContext dbContext)
         {
-            return Resource.ToModel(this, repository);
+            return Resource.ToModel(this, dbContext);
         }
 
         #endregion

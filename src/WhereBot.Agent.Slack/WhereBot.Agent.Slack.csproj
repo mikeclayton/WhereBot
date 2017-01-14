@@ -76,13 +76,9 @@
       <Project>{06250366-11a9-451e-ba3e-8a267ea997e0}</Project>
       <Name>WhereBot.Api.Client</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WhereBot.Api.Models\WhereBot.Api.Models.csproj">
-      <Project>{6a23f58a-c1ed-4c4c-82b1-b85fe8828b5d}</Project>
-      <Name>WhereBot.Api.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WhereBot.Api.Server\WhereBot.Api.Server.csproj">
-      <Project>{b938c32d-ef79-4256-8d14-86ac39690264}</Project>
-      <Name>WhereBot.Api.Server</Name>
+    <ProjectReference Include="..\WhereBot.Api.Data\WhereBot.Api.Data.csproj">
+      <Project>{f68bf156-b54a-48ef-85dd-23025adc05fb}</Project>
+      <Name>WhereBot.Api.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

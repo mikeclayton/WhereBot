@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using System.Linq;
+using WhereBot.Api.Data;
 
 namespace WhereBot.Api.Server.Modules
 {
@@ -18,11 +19,11 @@ namespace WhereBot.Api.Server.Modules
 
         #region Properties
 
-        private DataSet Repository
+        private DbContext DbContext
         {
             get
             {
-                return Globals.Repository;
+                return Globals.DbContext;
             }
         }
 
@@ -38,7 +39,7 @@ namespace WhereBot.Api.Server.Modules
             Get["/search"] = parameters =>
             {
                 var querystring = (DynamicDictionary)Request.Query;
-                var filter = this.Repository.GetResources().AsEnumerable();
+                var filter = this.DbContext.GetResources().AsEnumerable();
                 if (querystring.ContainsKey("id"))
                 {
                     var id = int.Parse((string)querystring["id"]);
@@ -68,10 +69,10 @@ namespace WhereBot.Api.Server.Modules
                 var querystring = (DynamicDictionary)Request.Query;
                 var locationId = int.Parse((string)parameters.locationId);
                 var searchRadius = int.Parse((string)querystring["searchRadius"]);
-                var locations = this.Repository.GetLocations();
+                var locations = this.DbContext.GetLocations();
                 var location = locations.Single(l => l.Id == locationId);
                 var nearbyLocations = locations.Where(l => (l.Id != locationId) && (l.GetDistanceFrom(location) <= searchRadius)).ToList();
-                var nearbyResources = this.Repository.GetResources().Where(r => nearbyLocations.Contains(r.Location)).ToList();
+                var nearbyResources = this.DbContext.GetResources().Where(r => nearbyLocations.Contains(r.Location)).ToList();
                 return Response.AsJson(nearbyResources);
             };
 
@@ -80,10 +81,10 @@ namespace WhereBot.Api.Server.Modules
                 var querystring = (DynamicDictionary)Request.Query;
                 var resourceId = int.Parse((string)parameters.resourceId);
                 var searchRadius = int.Parse((string)querystring["searchRadius"]);
-                var resources = this.Repository.GetResources();
+                var resources = this.DbContext.GetResources();
                 var resource = resources.Single(r => r.Id == resourceId);
-                var nearbyLocations = this.Repository.GetLocations().Where(l => (l.Id != resource.Location.Id) && (l.GetDistanceFrom(resource.Location) <= searchRadius)).ToList();
-                var nearbyResources = this.Repository.GetResources().Where(r => nearbyLocations.Contains(r.Location)).ToList();
+                var nearbyLocations = this.DbContext.GetLocations().Where(l => (l.Id != resource.Location.Id) && (l.GetDistanceFrom(resource.Location) <= searchRadius)).ToList();
+                var nearbyResources = this.DbContext.GetResources().Where(r => nearbyLocations.Contains(r.Location)).ToList();
                 return Response.AsJson(nearbyResources);
             };
 
@@ -96,7 +97,7 @@ namespace WhereBot.Api.Server.Modules
                 var name = (string)this.Request.Query["name"];
                 //var locationId = int.Parse((string)this.Request.Query["locationId"]);
                 //var location = (new LocationService(this.Repository)).GetLocationById(locationId);
-                var resource = this.Repository.AddResource(name);
+                var resource = this.DbContext.AddResource(name);
                 return Response.AsJson(resource);
             };
 
@@ -104,13 +105,13 @@ namespace WhereBot.Api.Server.Modules
             {
                 var oldResourceId = int.Parse((string)parameters.resourceId);
                 var newLocationId = int.Parse((string)parameters.locationId);
-                lock (this.Repository.LockObject)
+                lock (this.DbContext.LockObject)
                 {
-                    var resources = this.Repository.GetResources().ToList();
+                    var resources = this.DbContext.GetResources().ToList();
                     var oldResource = resources.Single(r => r.Id == oldResourceId);
-                    var newLocation = this.Repository.GetLocations().Single(l => l.Id == newLocationId);
-                    this.Repository.RemoveResource(oldResource.Id);
-                    var newResource = this.Repository.AddResource(oldResource.Id, oldResource.Name, newLocation);
+                    var newLocation = this.DbContext.GetLocations().Single(l => l.Id == newLocationId);
+                    this.DbContext.RemoveResource(oldResource.Id);
+                    var newResource = this.DbContext.AddResource(oldResource.Id, oldResource.Name, newLocation);
                     return Response.AsJson(newResource);
                 }
             };

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WhereBot.Models")]
+[assembly: AssemblyTitle("WhereBot.Api.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WhereBot.Models")]
+[assembly: AssemblyProduct("WhereBot.Api.Data")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6a23f58a-c1ed-4c4c-82b1-b85fe8828b5d")]
+[assembly: Guid("f68bf156-b54a-48ef-85dd-23025adc05fb")]
 
 // Version information for an assembly consists of the following four values:
 //
