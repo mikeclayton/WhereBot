@@ -91,11 +91,7 @@ namespace WhereBot.Api.Client
 
         public IEnumerable<Resource> All(string name)
         {
-            var client = new WebClient();
-            var uri = string.Format("{0}/all", this.Client.RootUri);
-            var json = client.DownloadString(uri);
-            var resources = ResourceClient.FromJson(json);
-            return resources;
+            return this.Search();
         }
 
         public IEnumerable<Resource> Search(int? id = null, string name = null, int? locationId = null, int? mapId = null)

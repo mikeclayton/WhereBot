@@ -35,12 +35,6 @@ namespace WhereBot.Api.Server.Modules
 
             #region Query Routes
 
-            Get["/all"] = parameters =>
-            {
-                var resources = this.Repository.GetResources();
-                return Response.AsJson(resources);
-            };
-
             Get["/search"] = parameters =>
             {
                 var querystring = (DynamicDictionary)Request.Query;
