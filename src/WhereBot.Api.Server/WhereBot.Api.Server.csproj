@@ -54,7 +54,6 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Modules\StorageModule.cs" />
     <Compile Include="Modules\MappingModule.cs" />
-    <Compile Include="Modules\SearchModule.cs" />
     <Compile Include="Modules\ResourceModule.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="Repository\DataSet.cs" />

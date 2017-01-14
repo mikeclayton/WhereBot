@@ -52,8 +52,8 @@ namespace WhereBot.Api.Server.Modules
                 }
                 if (querystring.ContainsKey("name"))
                 {
-                    var name = (string)querystring["name"];
-                    filter = filter.Where(l => l.Name == name);
+                    var name = ((string)querystring["name"]).ToLowerInvariant();
+                    filter = filter.Where(l => l.Name.ToLower() == name);
                 }
                 if (querystring.ContainsKey("mapId"))
                 {

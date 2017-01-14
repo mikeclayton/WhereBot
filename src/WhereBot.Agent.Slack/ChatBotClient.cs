@@ -307,8 +307,8 @@ namespace WhereBot.Agent.Slack
             }
             // find any matching locations and resources
             var client = new WhereBotClient(this.WhereBotApiUrl);
-            var locations = whereNames.SelectMany(n => client.Locations.SearchByLocationName(n)).ToList();
-            var resources = whereNames.SelectMany(n => client.Resources.SearchByResourceName(n)).ToList();
+            var locations = whereNames.SelectMany(n => client.Locations.Search(name: n)).ToList();
+            var resources = whereNames.SelectMany(n => client.Resources.Search(name: n)).ToList();
             // generate the response message
             var messageText = new StringBuilder();
             messageText.AppendFormat("I found {0} results:", locations.Count + resources.Count);
@@ -323,7 +323,7 @@ namespace WhereBot.Agent.Slack
                 {
                     messageText.AppendLine();
                 }
-                messageText.Append(string.Join("\r\n", resources.Select(r => string.Format("{0} at {1}", r.Name, r.Location.Name)).ToArray()));
+                messageText.Append(string.Join("\r\n", resources.Select(r => string.Format("{0} is at {1}", r.Name, r.Location.Name)).ToArray()));
             }
             this._slackSocketClient.SendMessage((messageReceived) => { }, message.channel, messageText.ToString());
             // generate the map
@@ -361,13 +361,13 @@ namespace WhereBot.Agent.Slack
             // find or create a resource for the person
             var client = new WhereBotClient(this.WhereBotApiUrl);
             var resourceName = this._slackSocketClient.UserLookup[message.user].profile.real_name;
-            var resource = client.Resources.SearchByResourceName(resourceName).SingleOrDefault();
+            var resource = client.Resources.Search(name: resourceName).SingleOrDefault();
             if (resource == null)
             {
                 resource = client.Resources.AddResource(resourceName);
             }
             // find any matching locations
-            var locations = client.Locations.SearchByLocationName(locationName);
+            var locations = client.Locations.Search(name: locationName).ToList();
             switch (locations.Count)
             {
                 case 0:
@@ -381,7 +381,7 @@ namespace WhereBot.Agent.Slack
             }
             // set the location
             var location = locations.Single();
-            var newResource = client.Resources.MoveResource(resource, location);
+            var newResource = client.Resources.MoveResource(resource.Id, location.Id);
             this._slackSocketClient.SendMessage((messageReceived) => { }, message.channel, string.Format("Done. Your new location is '{0}'!", locationName));
         }
 

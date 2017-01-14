@@ -52,8 +52,8 @@ namespace WhereBot.Api.Server.Modules
                 }
                 if (querystring.ContainsKey("name"))
                 {
-                    var name = (string)querystring["name"];
-                    filter = filter.Where(r => r.Name == name);
+                    var name = ((string)querystring["name"]).ToLower();
+                    filter = filter.Where(r => r.Name.ToLowerInvariant() == name);
                 }
                 if (querystring.ContainsKey("locationId"))
                 {
@@ -65,8 +65,8 @@ namespace WhereBot.Api.Server.Modules
                     var mapId = int.Parse((string)querystring["mapId"]);
                     filter = filter.Where(r => (r.Location != null) && (r.Location.Map != null) && (r.Location.Map.Id == mapId));
                 }
-                var locations = filter.ToList();
-                return Response.AsJson(locations);
+                var resources = filter.ToList();
+                return Response.AsJson(resources);
             };
 
             Get["/nearLocation/{locationId}"] = parameters =>
@@ -106,7 +106,7 @@ namespace WhereBot.Api.Server.Modules
                 return Response.AsJson(resource);
             };
 
-            Post["/move/{resourceId}/to/{locationId}"] = parameters =>
+            Post["{resourceId}/moveTo/{locationId}"] = parameters =>
             {
                 var oldResourceId = int.Parse((string)parameters.resourceId);
                 var newLocationId = int.Parse((string)parameters.locationId);

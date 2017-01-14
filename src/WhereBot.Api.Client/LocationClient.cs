@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using WhereBot.Api.Models;
 
 namespace WhereBot.Api.Client
@@ -30,9 +32,44 @@ namespace WhereBot.Api.Client
 
         #endregion
 
-        #region Methods
+        #region Conversion Methods
 
-        internal static Location FromJson(JToken token)
+        internal static IEnumerable<Location> FromJson(string json)
+        {
+            var obj = JsonConvert.DeserializeObject(json);
+            // is it a null?
+            if (obj == null)
+            {
+                yield break;
+            }
+            // is it an array of objects?
+            var array = obj as JArray;
+            if (array != null)
+            {
+                var results = LocationClient.FromJArray(array);
+                foreach (var result in results)
+                {
+                    yield return result;
+                }
+                yield break;
+            }
+            // is it a single object?
+            var token = obj as JToken;
+            if (token != null)
+            {
+                yield return LocationClient.FromJToken(token);
+                yield break;
+            }
+            // unknown type
+            throw new InvalidOperationException();
+        }
+
+        internal static IEnumerable<Location> FromJArray(JArray array)
+        {
+            return array.Select(l => LocationClient.FromJToken(l));
+        }
+
+        internal static Location FromJToken(JToken token)
         {
             var mapToken = token.Value<JToken>("map");
             var map = default(Map);
@@ -50,13 +87,44 @@ namespace WhereBot.Api.Client
             }.Build();
         }
 
-        public List<Location> SearchByLocationName(string name)
+        #endregion
+
+        #region API Methods
+
+        public IEnumerable<Location> All(string name)
         {
             var client = new WebClient();
-            var uri = string.Format("{0}/search/locations/byLocationName/{1}", this.Client.RootUri, WebUtility.UrlEncode(name));
-            var responseJson = client.DownloadString(uri);
-            var jsonObjects = (JArray)JsonConvert.DeserializeObject(responseJson);
-            var locations = jsonObjects.Select(l => LocationClient.FromJson(l)).ToList();
+            var uri = string.Format("{0}/all", this.Client.RootUri);
+            var json = client.DownloadString(uri);
+            var locations = LocationClient.FromJson(json);
+            return locations;
+        }
+
+        public IEnumerable<Location> Search(int? id = null, string name = null, int? mapId = null)
+        {
+            var client = new WebClient();
+            var query = new Dictionary<string, string>();
+            if (id.HasValue)
+            {
+                query.Add("id", id.ToString());
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                query.Add("name", name);
+            }
+            if (mapId.HasValue)
+            {
+                query.Add("mapId", mapId.ToString());
+            }
+            var uri = new StringBuilder();
+            uri.AppendFormat("{0}/locations/search", this.Client.RootUri);
+            if (query.Count > 0)
+            {
+                uri.Append("?");
+                uri.Append(string.Join("&", query.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value)))));
+            }
+            var json = client.DownloadString(uri.ToString());
+            var locations = LocationClient.FromJson(json);
             return locations;
         }
 

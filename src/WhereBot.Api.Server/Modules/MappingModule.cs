@@ -78,7 +78,8 @@ namespace WhereBot.Api.Server.Modules
                 var resourceIds = (string.IsNullOrEmpty(resourceString)) ? new List<int>() : resourceString.Split(',').Select(l => int.Parse(l)).ToList();
                 var resources = this.Repository.GetResources().Where(r => resourceIds.Contains(r.Id)).ToList();
                 // render the map
-                var filename = "..\\..\\App_Data\\Maps\\map-0.png";
+                var mapId = 0; // hardcoded for now
+                var filename = string.Format("..\\..\\App_Data\\Maps\\map-{0:D4}.png", mapId);
                 using (var image = Bitmap.FromFile(filename))
                 {
                     using (var graphics = Graphics.FromImage(image))

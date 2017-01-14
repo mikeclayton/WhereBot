@@ -47,7 +47,7 @@ namespace WhereBot.Api.Client
         {
             var client = new WebClient();
             var uri = string.Format(
-                "{0}/map/fromIds?locationIds={1}&resourceIds={2}",
+                "{0}/maps/render/fromIds?locationIds={1}&resourceIds={2}",
                 this.Client.RootUri,
                 string.Join(",", locationIds),
                 string.Join(",", resourceIds));
